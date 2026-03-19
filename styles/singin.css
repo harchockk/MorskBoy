@@ -1,0 +1,41 @@
+body{
+    background-image: url(../images/Registr_fon3.jpg);
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: "Comfortaa", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 200;
+    font-style: normal;
+}
+
+
+.section__registration {
+    display: flex;
+    justify-content: center;
+}
+
+.Card{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+}
+
+h1{
+    font-size:120px;
+}
+
+#userForm
+{
+    align-self: center;
+    font-size:x-large;
+    display: flex;
+    flex-direction: column;
+    gap:7px;
+    width: 70%;
+    justify-content: center;
+    background-color: rgb(138, 173, 241);
+    padding:20px;
+    border:solid black 3px;
+    border-radius: 10px;
+}

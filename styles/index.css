@@ -8,7 +8,8 @@
 
  body{
     /* background-image: url(../images/Lobby_fon.jpg); */
-    background-image: url(https://img.freepik.com/premium-vector/blue-sea-ocean-things-seamless-pattern-background_463290-453.jpg);
+    background-image: url(https://img.freepik.com/premium-vector/illustration-view-ship-sea_1266838-1091.jpg?semt=ais_hybrid&w=740&q=80);
+    background-size: cover;
     color: coral;
     text-align: center;
     font-family: "Comfortaa", sans-serif;

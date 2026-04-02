@@ -1,3 +1,6 @@
-.pole-main{
-    display: block;
+.pole_main {
+    display:flex;
+    justify-content: center;
+    padding: 70px;
 }
+

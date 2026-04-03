@@ -2,5 +2,19 @@
     display:flex;
     justify-content: center;
     padding: 70px;
+    position: relative;
+}
+
+.cells_name,
+.cells_number {
+    position: absolute;
+    margin: 0;
+    padding:0;
+    left:37%;
+}
+
+.cells_name span,
+.cells_number span {
+    display: block;
 }
 

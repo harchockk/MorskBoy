@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="styles\login_signin.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
@@ -14,27 +13,23 @@
 <body>
     
 
-    <section class="section__registration">
-        <div class="Card">
-            <h1>Добавить пользователя</h1> 
-            <form id="userForm">
-                 <label>Username</label>
-                 <input name="username" required>
+<div class="card">
+        <h1>Регистрация</h1> 
+        <form class="user-form">
+                <label>Username</label>
+                <input type="text" name="username" required>
     
-     
-                 <label>Email</label>
-                 <input name="Email" required>
-     
-     
-                 <label>Password</label>
-                 <input name="password"  type="password"   required>
-     
-                 <button type="submit" href=>Создать</button>
-     
-     
-             </form>
-             <pre id="out"></pre>
-         </div>
+                <label>Email</label>
+                <input type="email" name="Email" required>
+    
+                <label>Password</label>
+                <input type="password" name="password" type="password" required>
+    
+                <button type="submit">Создать</button>
+            </form>
+            <p class="perehod">Уже есть аккаунт? <a href="signin.html">Войти</a></p>
+            <pre id="out"></pre>
+        </div>
      
     </section>
    

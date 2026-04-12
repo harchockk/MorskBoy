@@ -1,4 +1,4 @@
-.pole_main {
+/* .pole_main {
     display:flex;
     justify-content: center;
     padding: 70px;
@@ -16,5 +16,81 @@
 .cells_name span,
 .cells_number span {
     display: block;
+} */
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
 }
 
+
+.whole_game_part{
+    display: flex;
+    height: 100vh;
+}
+
+.menu_board {
+    flex: 1; 
+    background-color: #f0f0f0;
+    border-right: 1px solid #ccc;
+}
+
+
+.pole_main {
+    flex: 3; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.field {
+    display: grid;
+    grid-template-areas: 
+        ".cells_name"
+        "cells_number grid";
+    gap: 10px;
+}
+
+.pole {
+    grid-area: grid;
+    display: grid;
+    grid-template-columns: repeat(10, 30px);
+    grid-template-rows: repeat(10, 30px);
+    border: 2px solid black;
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    box-sizing: border-box;
+}
+
+
+.cells_name {
+    grid-area: letters;
+    display: flex;
+}
+
+.cells_name span {
+    width: 30px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.cells_number {
+    grid-area: numbers;
+    display: flex;
+    flex-direction: column;
+}
+
+.cells_number {
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-weight: bold;
+    width: 20px;
+}

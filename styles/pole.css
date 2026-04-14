@@ -23,6 +23,7 @@ body {
     padding: 0;
     height: 100%;
     font-family: Arial, sans-serif;
+    font-size: 200%;
 }
 
 
@@ -51,46 +52,46 @@ body {
     grid-template-areas: 
         ".cells_name"
         "cells_number grid";
-    gap: 10px;
+    gap: 20px;
 }
 
 .pole {
     grid-area: grid;
     display: grid;
-    grid-template-columns: repeat(10, 30px);
-    grid-template-rows: repeat(10, 30px);
+    grid-template-columns: repeat(10, 60px);
+    grid-template-rows: repeat(10, 60px);
     border: 2px solid black;
 }
 
 .cell {
-    width: 30px;
-    height: 30px;
+    width: 60px;
+    height: 60px;
     border: 1px solid black;
     box-sizing: border-box;
 }
 
 
 .cells_name {
-    grid-area: letters;
+    grid-area: cells_name;
     display: flex;
 }
 
 .cells_name span {
-    width: 30px;
+    width: 60px;
     text-align: center;
     font-weight: bold;
 }
 
 .cells_number {
-    grid-area: numbers;
+    grid-area: cells_number;
     display: flex;
     flex-direction: column;
 }
 
 .cells_number {
-    height: 30px;
-    line-height: 30px;
+    height: 60px;
+    line-height: 60px;
     text-align: center;
     font-weight: bold;
-    width: 20px;
+    width: 60px;
 }

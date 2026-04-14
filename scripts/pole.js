@@ -60,10 +60,17 @@ const letters = ['A','B','C','D','E','F','G','H','I','J'];
 const numbers = ['0','1','2','3','4','5','6','7','8','9'];
 
 function createPole() {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 10; i++) {
+        for (let ii = 0; ii < 10; ii++) {
+
         const cell = document.createElement('div');
         cell.classList.add('cell');
         grid.appendChild(cell);
+        cell.dataset.x_cords = ii;
+        cell.dataset.y_cords = i;
+
+        }
+        
     }
 
     letters.forEach(letter => {
@@ -80,3 +87,76 @@ function createPole() {
 }
 
 createPole();
+
+
+
+let ships = 
+[
+    {
+        name:"dvu_palubnik",
+        length:2,
+        image:"",
+        count: 3
+
+    },
+    {
+        name:"tro_palubnik",
+        length:3,
+        image:"",
+        count: 2
+    },
+    {
+        name:"four_palubnik",
+        length:4,
+        image:"",
+        count: 1
+    },
+    {
+        name:"pyaty_palubnik",
+        length:5,
+        image:"",
+        count: 1
+    }
+
+];
+
+let currentShip = 
+    {
+        name: "",
+        length: null,
+        image: "",
+        x_cords: null,
+        y_cords: null,
+        napravl:"",
+        health: "",
+        // isKilled()
+    };
+
+
+let cell = {
+
+    x_cords: null,
+    y_cords: null,
+    sostoyanye: "pusto",
+
+};
+
+
+
+let field =[];
+
+for(let i = 0;i<10;i++)
+{
+    for(let ii = 0;ii<10;ii++)
+    {
+        let a = cell(ii,i);
+        field.push(a);
+    }
+};
+
+
+for(let i = 0;i<100;i++)
+{
+    console.log(field[i]);
+};
+

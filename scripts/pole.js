@@ -133,11 +133,13 @@ let currentShip =
     };
 
 
-let cell = {
+class Cell  {
 
-    x_cords: null,
-    y_cords: null,
-    sostoyanye: "pusto",
+    constructor(x,y) {
+        this.x_cords = x;
+        this.y_cords = y;
+        this.sostoyanye = "pusto";
+    }
 
 };
 
@@ -145,11 +147,11 @@ let cell = {
 
 let field =[];
 
-for(let i = 0;i<10;i++)
+for(let i = 0;i<10;i++)w
 {
     for(let ii = 0;ii<10;ii++)
     {
-        let a = cell(ii,i);
+        let a = new Cell(ii,i);
         field.push(a);
     }
 };
@@ -160,3 +162,25 @@ for(let i = 0;i<100;i++)
     console.log(field[i]);
 };
 
+
+function Opredelyator(a)
+{
+    let cord = Math.round(x);
+    let fin_pos = 0;
+
+    for(let i = 0;i<10;i++)
+    {
+        for(let ii = 0;ii<=60;ii++)
+        {
+            if(cord == ii)
+            {
+                fin_pos = i;
+                break;
+            };
+        }
+    }
+
+    
+
+    return fin_pos;
+};

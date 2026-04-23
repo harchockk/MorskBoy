@@ -95,26 +95,26 @@ let ships =
     {
         name:"dvu_palubnik",
         length:2,
-        image:"",
+        image:"./images/Ship.PNG",
         count: 3
 
     },
     {
         name:"tro_palubnik",
         length:3,
-        image:"",
+        image:"./images/Ship.PNG",
         count: 2
     },
     {
         name:"four_palubnik",
         length:4,
-        image:"",
+        image:"./images/Ship.PNG",
         count: 1
     },
     {
         name:"pyaty_palubnik",
         length:5,
-        image:"",
+        image:"./images/Ship.PNG",
         count: 1
     }
 
@@ -147,7 +147,7 @@ class Cell  {
 
 let field =[];
 
-for(let i = 0;i<10;i++)w
+for(let i = 0;i<10;i++)
 {
     for(let ii = 0;ii<10;ii++)
     {
@@ -165,7 +165,7 @@ for(let i = 0;i<100;i++)
 
 function Opredelyator(a)
 {
-    let cord = Math.round(x);
+    let cord = Math.round(a);
     let fin_pos = 0;
 
     for(let i = 0;i<10;i++)
@@ -180,7 +180,41 @@ function Opredelyator(a)
         }
     }
 
-    
-
     return fin_pos;
 };
+
+
+
+
+
+
+
+
+const ship_grid = document.querySelector(".menu_board");
+
+ships.forEach((korabl, i) => {
+    const shipBox = document.createElement("div");
+
+    const img = document.createElement("img");
+    img.src = korabl.image;
+    img.classList.add("sheep");
+    img.draggable = true;
+
+    const countBox = document.createElement("div");
+    countBox.textContent = korabl.count;
+    countBox.style.color = "white";
+    countBox.style.textAlign = "center";
+    countBox.style.fontSize = "14px";
+
+    shipBox.appendChild(img);
+    shipBox.appendChild(countBox);
+
+    ship_grid.appendChild(shipBox);
+
+    img.addEventListener("dragstart", e=> {
+        if(korabl.count ===0) {
+            e.preventDefault();
+            return;
+        }
+    });
+});

@@ -95,26 +95,26 @@ let ships =
     {
         name:"dvu_palubnik",
         length:2,
-        image:"./images/Ship.PNG",
+        image:"./images/Dvup.png",
         count: 3
 
     },
     {
         name:"tro_palubnik",
         length:3,
-        image:"./images/Ship.PNG",
+        image:"./images/Tryp.png",
         count: 2
     },
     {
         name:"four_palubnik",
         length:4,
-        image:"./images/Ship.PNG",
+        image:"./images/Chetyry.png",
         count: 1
     },
     {
         name:"pyaty_palubnik",
         length:5,
-        image:"./images/Ship.PNG",
+        image:"./images/Pyat.png",
         count: 1
     }
 

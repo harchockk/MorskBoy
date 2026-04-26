@@ -108,7 +108,7 @@ function Opredelyator(a)
 
 
 function getCell(x, y) {
-    return field.find(cell => cell.x === x && cell.y === y);
+    return field.find(cell => cell.x_cords === x && cell.y_cords === y);
 };
 
 
@@ -142,7 +142,7 @@ function makezanyat(x,y,length){
 function highlight(x, y, length, valid) {
     unHighlight();
     for (let i = 0; i < length; i++) {
-        const Cell = document.querySelector(`.cell[x_cords="${x + i}"][y_cords="${y}"]`);
+        const Cell = document.querySelector(`.cell[data-x_cords="${x + i}"][data-y_cords="${y}"]`);
         if (Cell) {
             Cell.classList.add(valid ? "highlight_on" : "highlight_of");
         }
@@ -252,14 +252,14 @@ pole.addEventListener("drop",e =>{
 
     if(x === null || y === null){return};
 
-    if(x + korabl.length >9) {return};
+    if(x + korabl.length > 10) {return};
     
     if(allow_pos_x(x,y,korabl.length) === false){return};
 
     korabl.count--;
-    const count = document.querySelector(`.ship-count[data-ship-index="$index}"]`);
+    const count = document.querySelector(`[data-index="${index}"]`);
     if (count) {
-        count.textContent = "×" + korabl.count;
+        count.textContent = korabl.count;
     }
 
     makezanyat(x,y,korabl.length);
@@ -286,7 +286,7 @@ pole.addEventListener("drop",e =>{
             if (cell) {cell.state = "empty";}
         }
         korabl.count++;
-        const count = document.querySelector(`.ship-count[data-ship-index="${index}"]`)
+        const count = document.querySelector(`[data-index="${index}"]`)
         if (count) {count.textContent = "×" + korabl.count;}
         img.remove();
     });

@@ -34,8 +34,8 @@ body {
 .sheep {
     display: block;
     cursor: grab;
-    /* image-rendering: pixelated;
-    object-fit: fill; */
+    image-rendering: pixelated;
+    object-fit: fill;
 }
 
 .sheep:active {
@@ -60,6 +60,15 @@ body {
     grid-template-columns: 60px auto;
     grid-template-rows: 60px auto;
     gap: 0;
+}
+
+
+.cell {
+    width: 60px;
+    height: 60px;
+    border: 1px solid rgb(0, 0, 0);
+    box-sizing: border-box;
+    transition: background-color 0.15s;
 }
 
 

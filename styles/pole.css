@@ -1,23 +1,3 @@
-/* .pole_main {
-    display:flex;
-    justify-content: center;
-    padding: 70px;
-    position: relative;
-}
-
-.cells_name,
-.cells_number {
-    position: absolute;
-    margin: 0;
-    padding:0;
-    left:37%;
-}
-
-.cells_name span,
-.cells_number span {
-    display: block;
-} */
-
 body {
     margin: 0;
     padding: 0;
@@ -33,18 +13,39 @@ body {
 }
 
 .menu_board {
-    flex: 1; 
-    background-color: #f0f0f0;
-    border-right: 1px solid #ccc;
-    display:grid;
-    grid-template-columns: repeat(2,1fr);
-    gap:20px;
+  flex: 0 0 220px;
+    background-color: #243447;
+    border-right: 2px solid #3a5068;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
 
+}
+
+.ship-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.sheep {
+    display: block;
+    cursor: grab;
+    /* image-rendering: pixelated;
+    object-fit: fill; */
+}
+
+.sheep:active {
+    cursor: grabbing;
+    opacity: 0.7;
 }
 
 
 .pole_main {
-    flex: 3; 
+    flex: 1; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -53,25 +54,12 @@ body {
 
 .field {
     display: grid;
-    grid-template-areas: 
-        ".cells_name"
+    grid-template-areas:
+        "corner cells_name"
         "cells_number grid";
-    gap: 20px;
-}
-
-.pole {
-    grid-area: grid;
-    display: grid;
-    grid-template-columns: repeat(10, 60px);
-    grid-template-rows: repeat(10, 60px);
-    border: 2px solid black;
-}
-
-.cell {
-    width: 60px;
-    height: 60px;
-    border: 1px solid black;
-    box-sizing: border-box;
+    grid-template-columns: 60px auto;
+    grid-template-rows: 60px auto;
+    gap: 0;
 }
 
 
@@ -82,9 +70,19 @@ body {
 
 .cells_name span {
     width: 60px;
-    text-align: center;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: bold;
+    font-size: 18px;
 }
+
+
+
+
+
+
 
 .cells_number {
     grid-area: cells_number;
@@ -92,16 +90,47 @@ body {
     flex-direction: column;
 }
 
-.cells_number {
-    height: 60px;
-    line-height: 60px;
-    text-align: center;
-    font-weight: bold;
+.cells_number span {
     width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
 }
 
-.sheep
-  {
-   width: 250px;
-   height: 250px;
-  }
+
+
+.pole {
+    grid-area: grid;
+    position:relative;
+    display: grid;
+    grid-template-columns: repeat(10, 60px);
+    grid-template-rows: repeat(10, 60px);
+    border: 2px solid black;
+}
+
+
+.cell.highlight_on{
+    background-color: rgba(50, 220, 100, 0.45);
+}
+
+.cell.highlight_of{
+    background-color: rgba(240, 93, 60, 0.45);
+}
+
+
+.on_field {
+    position: absolute;
+    cursor: pointer;
+    z-index: 5;
+    object-fit: fill;
+    box-sizing: border-box;
+    outline: 2px solid rgba(255, 255, 255, 0.25);
+    transition: outline 0.15s;
+}
+
+.on_field:hover {
+    outline: 2px solid rgba(255, 80, 80, 0.8);
+}

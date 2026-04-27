@@ -143,3 +143,36 @@ body {
 .on_field:hover {
     outline: 2px solid rgba(255, 80, 80, 0.8);
 }
+
+.rotate_zone {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+}
+
+.rotate_btn {
+    width: 140px;
+    padding: 14px 0;
+    background: #1e3a5f;
+    border: 2px solid #2e6090;
+    border-radius: 12px;
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+}
+
+.rotate_btn:hover {
+    background: #274f7a;
+}
+
+
+.rotate_label {
+    font-size: 15px;
+    color: #94a3b8;
+    text-align: center;
+}

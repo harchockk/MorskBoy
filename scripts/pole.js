@@ -129,10 +129,34 @@ function allow_pos_x(x, y, length) {
     return true;
 };
 
+function allow_pos_y(x, y, length) {
+    for (let i = 0; i < length; i++) {
+
+        if (x > 9 || y + i > 9) return false;
+
+        for (let ii = -1; ii <= 1; ii++) {
+            for (let iii = -1; iii <= 1; iii++) {
+                const neighbor = getCell(x+ii, y + i + iii);
+                if (neighbor && neighbor.state === "ship"){
+                   return false; 
+                } 
+            }
+        }
+    }
+    return true;
+};
+
 
 function makezanyat(x,y,length){
      for (let i = 0; i < length; i++) {
         const cell = getCell(x + i, y);
+        if (cell) cell.state = "ship";
+    }
+};
+
+function makezanyat_y(x,y,length){
+     for (let i = 0; i < length; i++) {
+        const cell = getCell(x , y + i);
         if (cell) cell.state = "ship";
     }
 };
@@ -149,6 +173,16 @@ function highlight(x, y, length, valid) {
     }
 };
 
+function highlight_y(x, y, length, valid) {
+    unHighlight();
+    for (let i = 0; i < length; i++) {
+        const domCell = document.querySelector(`.cell[data-x_cords="${x}"][data-y_cords="${y + i}"]`);
+        if (domCell) {
+            domCell.classList.add(valid ? "highlight_on" : "highlight_of");
+        }
+    }
+};
+
 function unHighlight() {
     document.querySelectorAll(".cell").forEach(cell => {
         cell.classList.remove("highlight_on", "highlight_of");
@@ -156,6 +190,27 @@ function unHighlight() {
 };
 
 
+let isVertical = false;
+
+
+
+const rotateZone = document.querySelector(".rotate_zone");
+
+const rotateBtn = document.createElement("button");
+rotateBtn.classList.add("rotate_btn");
+rotateBtn.textContent = "Повернуть";
+rotateZone.appendChild(rotateBtn);
+
+const rotateLabel = document.createElement("div");
+rotateLabel.classList.add("rotate_label");
+rotateLabel.textContent = "Горизонтально";
+rotateZone.appendChild(rotateLabel);
+
+rotateBtn.addEventListener("click", () => {
+    isVertical = !isVertical;
+    rotateLabel.textContent = isVertical ? "Вертикально" : "Горизонтально";
+    rotateBtn.classList.toggle("rotate_btn_active", isVertical);
+});
 
 
 
@@ -177,7 +232,7 @@ ships.forEach((korabl, i) => {
     countBox.style.color = "white";
     countBox.style.textAlign = "center";
     countBox.style.fontSize = "14px";
-    countBox.dataset.Index = i;
+    countBox.dataset.index = i;
 
     shipBox.appendChild(img);
     shipBox.appendChild(countBox);
@@ -230,7 +285,11 @@ pole.addEventListener("dragover",e => {
         return;
     }
 
-    highlight(x,y,korabl.length, allow_pos_x(x,y,korabl.length));
+    if (isVertical) {
+        highlight_y(x, y, korabl.length, allow_pos_y(x, y, korabl.length));
+    } else {
+        highlight(x, y, korabl.length, allow_pos_x(x, y, korabl.length));
+    }
 });
 
 pole.addEventListener("dragleave", () => unHighlight());
@@ -252,42 +311,81 @@ pole.addEventListener("drop",e =>{
 
     if(x === null || y === null){return};
 
-    if(x + korabl.length > 10) {return};
-    
-    if(allow_pos_x(x,y,korabl.length) === false){return};
 
-    korabl.count--;
-    const count = document.querySelector(`[data-index="${index}"]`);
-    if (count) {
-        count.textContent = korabl.count;
+
+     if (isVertical) {
+        if(y + korabl.length > 10){return;}
+        if(!allow_pos_y(x, y, korabl.length)){return;}
+
+        korabl.count--;
+        const count = document.querySelector(`[data-index="${index}"]`);
+        if (count) {count.textContent = korabl.count;}
+
+        makezanyat_y(x, y, korabl.length);
+
+        const img = document.createElement("img");
+        img.src = korabl.image;
+        img.classList.add("on_field");
+
+        img.style.left = (x * 60) + "px";
+        img.style.top = (y * 60) + "px";
+        img.style.width = (60 * korabl.length) + "px";
+        img.style.height = 60 + "px";
+        img.style.transformOrigin = "top left";
+        img.style.transform = `rotate(90deg) translateY(-60px)`;
+        img.dataset.x_cords = x;
+        img.dataset.y_cords = y;
+        img.dataset.length = korabl.length;
+        img.dataset.Index = index;
+        img.dataset.vertikal = "true";
+
+        pole.appendChild(img);
+
+        img.addEventListener("click", () => {
+            for (let i = 0; i < korabl.length; i++) {
+                const cell = getCell(x, y + i);
+                if (cell) { cell.state = "pusto";}
+            }
+            korabl.count++;
+            const count = document.querySelector(`[data-index="${index}"]`);
+            if (count) { count.textContent = korabl.count; }
+            img.remove();
+        });
+
+    } else {
+        if(x + korabl.length > 10) {return;}
+        if(!allow_pos_x(x, y, korabl.length)) {return;}
+
+        korabl.count--;
+        const count = document.querySelector(`[data-index="${index}"]`);
+        if (count) {count.textContent = korabl.count;}
+
+        makezanyat(x, y, korabl.length);
+
+        const img = document.createElement("img");
+        img.src = korabl.image;
+        img.classList.add("on_field");
+
+        img.style.left = (x * 60) + "px";
+        img.style.top  = (y * 60) + "px";
+        img.style.width = (60 * korabl.length) + "px";
+        img.style.height = 60 + "px";
+        img.dataset.x_cords = x;
+        img.dataset.y_cords = y;
+        img.dataset.length = korabl.length;
+        img.dataset.Index = index;
+
+        pole.appendChild(img);
+
+        img.addEventListener("click", () => {
+            for (let i = 0; i < korabl.length; i++) {
+                const cell = getCell(x + i, y);
+                if (cell) { cell.state = "pusto";}
+            }
+            korabl.count++;
+            const count = document.querySelector(`[data-index="${index}"]`);
+            if (count) { count.textContent = korabl.count; }
+            img.remove();
+        });
     }
-
-    makezanyat(x,y,korabl.length);
-
-    const img = document.createElement("img");
-    img.src = korabl.image;
-    img.classList.add("on_field");
-
-    img.style.left   = (x * 60) + "px";
-    img.style.top    = (y * 60) + "px";
-    img.style.width  = (60 * korabl.length) + "px";
-    img.style.height = 60 + "px";
-    img.dataset.x_cords  = x  ;
-    img.dataset.y_cords  = y;
-    img.dataset.length = korabl.length;
-    img.dataset.Index =index;
-
-
-    pole.appendChild(img);
-
-    img.addEventListener("click", () =>{
-        for (let i = 0; i < korabl.length; i++) {
-            const cell = getCell(x + i, y);
-            if (cell) {cell.state = "empty";}
-        }
-        korabl.count++;
-        const count = document.querySelector(`[data-index="${index}"]`)
-        if (count) {count.textContent = "×" + korabl.count;}
-        img.remove();
-    });
 });

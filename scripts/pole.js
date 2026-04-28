@@ -66,7 +66,6 @@ let ships =
 
 ];
 
-
 class Cell  {
 
     constructor(x,y) {
@@ -76,8 +75,6 @@ class Cell  {
     }
 
 };
-
-
 
 let field =[];
 
@@ -96,21 +93,18 @@ for(let i = 0;i<100;i++)
     console.log(field[i]);
 };
 
-
-function Opredelyator(a)
+function Opredelyator(cords)
 {
-    let res = Math.floor(a / 60);
+    let res = Math.floor(cords / 60);
     if (res < 0 || res >9 ) {
         return null;
     }
     return res;
 };
 
-
 function getCell(x, y) {
     return field.find(cell => cell.x_cords === x && cell.y_cords === y);
 };
-
 
 function allow_pos_x(x, y, length) {
     for (let i = 0; i < length; i++) {
@@ -146,22 +140,19 @@ function allow_pos_y(x, y, length) {
     return true;
 };
 
-
-function makezanyat(x,y,length){
+function makeZanyat(x,y,length){
      for (let i = 0; i < length; i++) {
         const cell = getCell(x + i, y);
         if (cell) cell.state = "ship";
     }
 };
 
-function makezanyat_y(x,y,length){
+function makeZanyat_y(x,y,length){
      for (let i = 0; i < length; i++) {
         const cell = getCell(x , y + i);
         if (cell) cell.state = "ship";
     }
 };
-
-
 
 function highlight(x, y, length, valid) {
     unHighlight();
@@ -189,10 +180,7 @@ function unHighlight() {
     });
 };
 
-
 let isVertical = false;
-
-
 
 const rotateZone = document.querySelector(".rotate_zone");
 
@@ -211,8 +199,6 @@ rotateBtn.addEventListener("click", () => {
     rotateLabel.textContent = isVertical ? "Вертикально" : "Горизонтально";
     rotateBtn.classList.toggle("rotate_btn_active", isVertical);
 });
-
-
 
 const ship_grid = document.querySelector(".menu_board");
 ships.forEach((korabl, i) => {
@@ -253,9 +239,7 @@ ships.forEach((korabl, i) => {
     });
 });
 
-
 const pole = document.getElementById("pole");
-
 
 document.addEventListener("dragstart", e => {
     const t = e.target.dataset.Index;
@@ -266,7 +250,6 @@ document.addEventListener("dragend", ()=> {
     sessionStorage.removeItem("dragIndex");
     unHighlight();
 });
-
 
 pole.addEventListener("dragover",e => {
     e.preventDefault();
@@ -294,7 +277,6 @@ pole.addEventListener("dragover",e => {
 
 pole.addEventListener("dragleave", () => unHighlight());
 
-
 pole.addEventListener("drop",e =>{
     e.preventDefault();
     unHighlight();
@@ -321,7 +303,7 @@ pole.addEventListener("drop",e =>{
         const count = document.querySelector(`[data-index="${index}"]`);
         if (count) {count.textContent = korabl.count;}
 
-        makezanyat_y(x, y, korabl.length);
+        makeZanyat_y(x, y, korabl.length);
 
         const img = document.createElement("img");
         img.src = korabl.image;
@@ -360,7 +342,7 @@ pole.addEventListener("drop",e =>{
         const count = document.querySelector(`[data-index="${index}"]`);
         if (count) {count.textContent = korabl.count;}
 
-        makezanyat(x, y, korabl.length);
+        makeZanyat(x, y, korabl.length);
 
         const img = document.createElement("img");
         img.src = korabl.image;

@@ -13,10 +13,10 @@ body {
 }
 
 .menu_board {
-  flex: 0 0 220px;
+    flex: 0 0 340px;
     background-color: #243447;
     border-right: 2px solid #3a5068;
-    padding: 16px;
+    padding:16px 20px;
     display: flex;
     flex-direction: column;
     gap: 16px;

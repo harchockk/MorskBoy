@@ -371,3 +371,124 @@ pole.addEventListener("drop",e =>{
         });
     }
 });
+
+let difficulty = 1;
+
+document.querySelectorAll(".d_check").forEach(radio => {
+    radio.addEventListener("change", () => {
+        difficulty = parseInt(radio.value);
+    });
+});
+
+
+const shipsCount = [3, 2, 1, 1];
+
+
+
+function clearPole() {
+    document.querySelectorAll(".on_field").forEach(img => img.remove());
+    field.forEach(cell => cell.state = "pusto");
+
+    ships.forEach((korabl, i) => {
+        korabl.count = shipsCount[i];
+        const count = document.querySelector(`[data-index="${i}"]`);
+        if (count) count.textContent = korabl.count;
+    });
+}
+
+document.getElementById("clear").addEventListener("click", () => clearPole());
+
+
+function randomPlace() {
+    clearPole();
+
+    ships.forEach((korabl, i) => {
+        let placed = 0;
+
+        while (placed < shipsCount[i]) {
+
+            const vertical = Math.random() < 0.5;
+
+            const x = Math.floor(Math.random() * 10);
+            const y = Math.floor(Math.random() * 10);
+
+            if (vertical) {
+                if (y + korabl.length > 10) continue;
+                if (!allow_pos_y(x, y, korabl.length)) continue;
+
+                makeZanyat_y(x, y, korabl.length);
+
+                const img = document.createElement("img");
+                img.src = korabl.image;
+                img.classList.add("on_field");
+
+                img.style.left = (x * 60) + "px";
+                img.style.top = (y * 60) + "px";
+                img.style.width = (60 * korabl.length) + "px";
+                img.style.height = 60 + "px";
+                img.style.transformOrigin = "top left";
+                img.style.transform = `rotate(90deg) translateY(-60px)`;
+                img.dataset.x_cords = x;
+                img.dataset.y_cords = y;
+                img.dataset.length = korabl.length;
+                img.dataset.Index = i;
+                img.dataset.vertikal = "true";
+
+                pole.appendChild(img);
+
+                img.addEventListener("click", () => {
+                    for (let i = 0; i < korabl.length; i++) {
+                        const cell = getCell(x, y + i);
+                        if (cell) cell.state = "pusto";
+                    }
+                    korabl.count++;
+                    const count = document.querySelector(`[data-index="${i}"]`);
+                    if (count) count.textContent = korabl.count;
+                    img.remove();
+                });
+
+            } else {
+                if (x + korabl.length > 10) continue;
+                if (!allow_pos_x(x, y, korabl.length)) continue;
+
+                makeZanyat(x, y, korabl.length);
+
+                const img = document.createElement("img");
+                img.src = korabl.image;
+                img.classList.add("on_field");
+                img.style.left   = (x * 60) + "px";
+                img.style.top    = (y * 60) + "px";
+                img.style.width  = (60 * korabl.length) + "px";
+                img.style.height = 60 + "px";
+                img.dataset.x_cords = x;
+                img.dataset.y_cords = y;
+                img.dataset.length  = korabl.length;
+                img.dataset.Index   = i;
+                pole.appendChild(img);
+
+                img.addEventListener("click", () => {
+                    for (let i = 0; i < korabl.length; i++) {
+                        const cell = getCell(x + i, y);
+                        if (cell) cell.state = "pusto";
+                    }
+                    korabl.count++;
+                    const count = document.querySelector(`[data-index="${i}"]`);
+                    if (count) count.textContent = korabl.count;
+                    img.remove();
+                });
+            }
+
+            placed++;
+            korabl.count--;
+            const count = document.querySelector(`[data-index="${i}"]`);
+            if (count) count.textContent = korabl.count;
+        }
+    });
+}
+
+document.getElementById("random").addEventListener("click", () => randomPlace());
+
+
+document.getElementById("start").addEventListener("click", () => {
+    
+});

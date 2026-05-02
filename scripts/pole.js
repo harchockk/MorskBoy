@@ -5,13 +5,13 @@ const numbersContainer = document.getElementById('cells_number');
 const letters = ['A','B','C','D','E','F','G','H','I','J'];
 const numbers = ['0','1','2','3','4','5','6','7','8','9'];
 
-function createPole() {
+function createPole(pole, letterss, numberss) {
     for (let i = 0; i < 10; i++) {
         for (let ii = 0; ii < 10; ii++) {
 
         const cell = document.createElement('div');
         cell.classList.add('cell');
-        grid.appendChild(cell);
+        pole.appendChild(cell);
         cell.dataset.x_cords = ii;
         cell.dataset.y_cords = i;
 
@@ -22,17 +22,17 @@ function createPole() {
     letters.forEach(letter => {
         const span = document.createElement('span');
         span.textContent = letter;
-        lettersContainer.appendChild(span);
+        letterss.appendChild(span);
     });
 
     numbers.forEach(num => {
         const span = document.createElement('span');
         span.textContent = num;
-        numbersContainer.appendChild(span);
+        numberss.appendChild(span);
     });
 }
 
-createPole();
+createPole(grid,lettersContainer,numbersContainer);
 
 
 
@@ -181,6 +181,7 @@ function unHighlight() {
 };
 
 let isVertical = false;
+let gameStarted = false;
 
 const rotateZone = document.querySelector(".rotate_zone");
 
@@ -253,8 +254,9 @@ document.addEventListener("dragend", ()=> {
 
 pole.addEventListener("dragover",e => {
     e.preventDefault();
-
+    if (gameStarted){return};
     const index = parseInt(sessionStorage.getItem("dragIndex") ?? -1,10);
+    
     if(index < 0 ){return};
 
     const korabl = ships[index];
@@ -280,6 +282,7 @@ pole.addEventListener("dragleave", () => unHighlight());
 pole.addEventListener("drop",e =>{
     e.preventDefault();
     unHighlight();
+    if (gameStarted){return};
 
     const index = parseInt(e.dataTransfer.getData("Index"), 10);
     if(isNaN(index)) {return};
@@ -490,5 +493,91 @@ document.getElementById("random").addEventListener("click", () => randomPlace())
 
 
 document.getElementById("start").addEventListener("click", () => {
+    if(difficulty ===0){
+        alert("Выберите сложность")
+        return;
+    }
+
+    const placedCounter = ships.every((korabl, i) => korabl.count === 0);
+    if (!placedCounter) {
+        alert("Расставьте все корабли");
+        return;
+    }
+
+    const player_field = field.map(cell =>({
+        x_cords:cell.x_cords,
+        y_cords:cell.y_cords,
+        state:cell.state
+    }));
+
+    gameStarted = true;
+    document.getElementById("pole").classList.add("game_active");
+
+
+
+    document.querySelectorAll(".on_field").forEach(img => {
+        img.draggable = false;
+        const copy = img.cloneNode(true);
+        img.replaceWith(copy);
+    });
+
+    document.querySelector(".menu_board").style.display = "none";
+    document.querySelector(".menu_btn").style.display = "none";
+    document.querySelector(".rotate_zone").style.display = "none";
+
+
+    const whole_part = document.querySelector(".whole_game_part");
+    whole_part.style.justifyContent = "center";
+    whole_part.style.alignItems = "center";
+    whole_part.style.gap = "60px";
+
+    const pole_main = document.querySelector(".pole_main");
+    const pole_box = document.querySelector(".pole_box");
+    pole_main.remove();
     
+
+    const player_side = document.createElement("div");
+    player_side.classList.add("game_side");
+
+    const player_title = document.createElement("div");
+    player_title.classList.add("game_title");
+    player_title.textContent = "Ваше поле";
+
+    player_side.appendChild(player_title);
+    player_side.appendChild(pole_box);
+
+
+
+    const enemy_side = document.createElement("div");
+    enemy_side.classList.add("game_side");
+
+    const enemy_title = document.createElement("div");
+    enemy_title.classList.add("game_title");
+    enemy_title.textContent = "Поле противника";
+
+    const enemy_field = document.createElement("div");
+    enemy_field.classList.add("field");
+
+    const enemy_letters = document.createElement("div");
+    enemy_letters.classList.add("cells_name");
+
+    const enemy_numbers = document.createElement("div");
+    enemy_numbers.classList.add("cells_number");
+
+    const enemy_pole = document.createElement("div");
+    enemy_pole.classList.add("pole");
+    enemy_pole.id = "pole_enemy";
+
+    enemy_field.appendChild(enemy_letters);
+    enemy_field.appendChild(enemy_numbers);
+    enemy_field.appendChild(enemy_pole);
+
+
+    createPole(enemy_pole, enemy_letters, enemy_numbers);
+
+    enemy_side.appendChild(enemy_title);
+    enemy_side.appendChild(enemy_field);
+
+    whole_part.appendChild(player_side);
+    whole_part.appendChild(enemy_side);
 });

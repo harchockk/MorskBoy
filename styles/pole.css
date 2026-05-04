@@ -267,3 +267,17 @@ body {
     color: #7dd3fc;
     text-align: center;
 }
+
+.fields_row {
+    display: flex;
+    gap: 50px;
+    align-items: flex-start;
+}
+
+.turn_label {
+    font-size: 28px;
+    font-weight: bold;
+    color: #7dd3fc;
+    text-align: center;
+    padding: 10px;
+}

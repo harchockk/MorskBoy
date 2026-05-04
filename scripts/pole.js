@@ -513,6 +513,8 @@ document.getElementById("start").addEventListener("click", () => {
     gameStarted = true;
     document.getElementById("pole").classList.add("game_active");
 
+    let wincount_player = 21;
+    let wincount_bot = 21;
 
 
     document.querySelectorAll(".on_field").forEach(img => {
@@ -530,6 +532,17 @@ document.getElementById("start").addEventListener("click", () => {
     whole_part.style.justifyContent = "center";
     whole_part.style.alignItems = "center";
     whole_part.style.gap = "60px";
+    whole_part.style.flexDirection = "column";
+
+
+    const turn_label = document.createElement("div");
+    turn_label.classList.add("turn_label");
+    turn_label.textContent = "Ваш ход";
+    whole_part.appendChild(turn_label);
+
+    const fields_row = document.createElement("div");
+    fields_row.classList.add("fields_row");
+    whole_part.appendChild(fields_row);
 
     const pole_main = document.querySelector(".pole_main");
     const pole_box = document.querySelector(".pole_box");
@@ -578,6 +591,75 @@ document.getElementById("start").addEventListener("click", () => {
     enemy_side.appendChild(enemy_title);
     enemy_side.appendChild(enemy_field);
 
-    whole_part.appendChild(player_side);
-    whole_part.appendChild(enemy_side);
+    fields_row.appendChild(player_side);
+    fields_row.appendChild(enemy_side);
+
+
+    let bot_field = [];
+    for (let i = 0; i < 10; i++) {
+        for (let ii = 0; ii < 10; ii++) {
+            bot_field.push(new Cell(ii, i));
+        }
+    }
+
+    function getBot_cell(x, y) {
+        return bot_field.find(c => c.x_cords === x && c.y_cords === y);
+    }
+
+     function allow_bot_x(x, y, length) {
+        for (let i = 0; i < length; i++) {
+            if (x + i > 9 || y > 9) return false;
+            for (let ii = -1; ii <= 1; ii++) {
+                for (let iii = -1; iii <= 1; iii++) {
+                    const n = getBot_cell(x + i + ii, y + iii);
+                    if (n && n.state === "ship") return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function allow_bot_y(x, y, length) {
+        for (let i = 0; i < length; i++) {
+            if (x > 9 || y + i > 9) return false;
+            for (let ii = -1; ii <= 1; ii++) {
+                for (let iii = -1; iii <= 1; iii++) {
+                    const n = getBot_cell(x + ii, y + i + iii);
+                    if (n && n.state === "ship") return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+     ships.forEach((korabl, i) => {
+        let placed = 0;
+        while (placed < shipsCount[i]) {
+
+            const vertical = Math.random() < 0.5;
+
+            const x = Math.floor(Math.random() * 10);
+            const y = Math.floor(Math.random() * 10);
+
+            if (vertical) {
+                if (y + korabl.length > 10) continue;
+                if (!allow_bot_y(x, y, korabl.length)) continue;
+                for (let i = 0; i < korabl.length; i++) {
+                    const cell = getBot_cell(x, y + i);
+                    if (cell) cell.state = "ship";
+                }
+            } else {
+                if (x + korabl.length > 10) continue;
+                if (!allow_bot_x(x, y, korabl.length)) continue;
+                for (let i = 0; i < korabl.length; i++) {
+                    const cell = getBot_cell(x + i, y);
+                    if (cell) cell.state = "ship";
+                }
+            }
+            placed++;
+        }
+    });
+
+    
 });

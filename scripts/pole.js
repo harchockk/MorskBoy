@@ -107,14 +107,18 @@ function getCell(x, y) {
 };
 
 function allow_pos_x(x, y, length) {
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) 
+    {
 
         if (x+i > 9 || y > 9) return false;
 
-        for (let ii = -1; ii <= 1; ii++) {
-            for (let iii = -1; iii <= 1; iii++) {
+        for (let ii = -1; ii <= 1; ii++) 
+        {
+            for (let iii = -1; iii <= 1; iii++) 
+            {
                 const neighbor = getCell(x+i+ii, y + iii);
-                if (neighbor && neighbor.state === "ship"){
+                if (neighbor && neighbor.state === "ship")
+                {
                    return false; 
                 } 
             }
@@ -124,14 +128,18 @@ function allow_pos_x(x, y, length) {
 };
 
 function allow_pos_y(x, y, length) {
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) 
+    {
 
         if (x > 9 || y + i > 9) return false;
 
-        for (let ii = -1; ii <= 1; ii++) {
-            for (let iii = -1; iii <= 1; iii++) {
+        for (let ii = -1; ii <= 1; ii++) 
+        {
+            for (let iii = -1; iii <= 1; iii++) 
+            {
                 const neighbor = getCell(x+ii, y + i + iii);
-                if (neighbor && neighbor.state === "ship"){
+                if (neighbor && neighbor.state === "ship")
+                {
                    return false; 
                 } 
             }
@@ -141,24 +149,28 @@ function allow_pos_y(x, y, length) {
 };
 
 function makeZanyat(x,y,length){
-     for (let i = 0; i < length; i++) {
+     for (let i = 0; i < length; i++) 
+    {
         const cell = getCell(x + i, y);
-        if (cell) cell.state = "ship";
+        if (cell) {cell.state = "ship"};
     }
 };
 
 function makeZanyat_y(x,y,length){
-     for (let i = 0; i < length; i++) {
+     for (let i = 0; i < length; i++) 
+    {
         const cell = getCell(x , y + i);
-        if (cell) cell.state = "ship";
+        if (cell) {cell.state = "ship"};
     }
 };
 
 function highlight(x, y, length, valid) {
     unHighlight();
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) 
+    {
         const Cell = document.querySelector(`.cell[data-x_cords="${x + i}"][data-y_cords="${y}"]`);
-        if (Cell) {
+        if (Cell) 
+        {
             Cell.classList.add(valid ? "highlight_on" : "highlight_of");
         }
     }
@@ -166,9 +178,11 @@ function highlight(x, y, length, valid) {
 
 function highlight_y(x, y, length, valid) {
     unHighlight();
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) 
+    {
         const domCell = document.querySelector(`.cell[data-x_cords="${x}"][data-y_cords="${y + i}"]`);
-        if (domCell) {
+        if (domCell) 
+        {
             domCell.classList.add(valid ? "highlight_on" : "highlight_of");
         }
     }
@@ -227,7 +241,8 @@ ships.forEach((korabl, i) => {
     ship_grid.appendChild(shipBox);
 
     img.addEventListener("dragstart", e=> {
-        if(korabl.count ===0) {
+        if(korabl.count ===0) 
+        {
             e.preventDefault();
             return;
         }
@@ -244,7 +259,10 @@ const pole = document.getElementById("pole");
 
 document.addEventListener("dragstart", e => {
     const t = e.target.dataset.Index;
-    if (t !== undefined) sessionStorage.setItem("dragIndex", t);
+    if (t !== undefined) 
+    {
+        sessionStorage.setItem("dragIndex", t)
+    };
 });
 
 document.addEventListener("dragend", ()=> {
@@ -270,9 +288,11 @@ pole.addEventListener("dragover",e => {
         return;
     }
 
-    if (isVertical) {
+    if (isVertical) 
+    {
         highlight_y(x, y, korabl.length, allow_pos_y(x, y, korabl.length));
-    } else {
+    } else 
+    {
         highlight(x, y, korabl.length, allow_pos_x(x, y, korabl.length));
     }
 });
@@ -298,13 +318,14 @@ pole.addEventListener("drop",e =>{
 
 
 
-     if (isVertical) {
-        if(y + korabl.length > 10){return;}
-        if(!allow_pos_y(x, y, korabl.length)){return;}
+     if (isVertical) 
+     {
+        if(y + korabl.length > 10){return};
+        if(!allow_pos_y(x, y, korabl.length)){return};
 
         korabl.count--;
         const count = document.querySelector(`[data-index="${index}"]`);
-        if (count) {count.textContent = korabl.count;}
+        if (count) {count.textContent = korabl.count};
 
         makeZanyat_y(x, y, korabl.length);
 
@@ -327,23 +348,28 @@ pole.addEventListener("drop",e =>{
         pole.appendChild(img);
 
         img.addEventListener("click", () => {
-            for (let i = 0; i < korabl.length; i++) {
+            for (let i = 0; i < korabl.length; i++) 
+            {
                 const cell = getCell(x, y + i);
-                if (cell) { cell.state = "pusto";}
+                if (cell) {cell.state = "pusto"};
             }
             korabl.count++;
             const count = document.querySelector(`[data-index="${index}"]`);
-            if (count) { count.textContent = korabl.count; }
+            if (count) 
+            {
+                count.textContent = korabl.count;
+            }
             img.remove();
         });
 
-    } else {
-        if(x + korabl.length > 10) {return;}
-        if(!allow_pos_x(x, y, korabl.length)) {return;}
+    } else 
+    {
+        if(x + korabl.length > 10) {return};
+        if(!allow_pos_x(x, y, korabl.length)) {return};
 
         korabl.count--;
         const count = document.querySelector(`[data-index="${index}"]`);
-        if (count) {count.textContent = korabl.count;}
+        if (count) {count.textContent = korabl.count};
 
         makeZanyat(x, y, korabl.length);
 
@@ -363,13 +389,17 @@ pole.addEventListener("drop",e =>{
         pole.appendChild(img);
 
         img.addEventListener("click", () => {
-            for (let i = 0; i < korabl.length; i++) {
+            for (let i = 0; i < korabl.length; i++) 
+            {
                 const cell = getCell(x + i, y);
-                if (cell) { cell.state = "pusto";}
+                if (cell) {cell.state = "pusto"};
             }
             korabl.count++;
             const count = document.querySelector(`[data-index="${index}"]`);
-            if (count) { count.textContent = korabl.count; }
+            if (count) 
+            { 
+                count.textContent = korabl.count; 
+            }
             img.remove();
         });
     }
@@ -395,7 +425,10 @@ function clearPole() {
     ships.forEach((korabl, i) => {
         korabl.count = shipsCount[i];
         const count = document.querySelector(`[data-index="${i}"]`);
-        if (count) count.textContent = korabl.count;
+        if (count) 
+        {
+            count.textContent = korabl.count
+        };
     });
 }
 
@@ -407,17 +440,21 @@ function randomPlace() {
 
     ships.forEach((korabl, i) => {
         let placed = 0;
+        let bad_tries = 0;
 
-        while (placed < shipsCount[i]) {
 
+        while (placed < shipsCount[i] && bad_tries<100) 
+        {
+            bad_tries++;
             const vertical = Math.random() < 0.5;
 
             const x = Math.floor(Math.random() * 10);
             const y = Math.floor(Math.random() * 10);
 
-            if (vertical) {
-                if (y + korabl.length > 10) continue;
-                if (!allow_pos_y(x, y, korabl.length)) continue;
+            if (vertical) 
+            {
+                if (y + korabl.length > 10) {continue};
+                if (!allow_pos_y(x, y, korabl.length)) {continue};
 
                 makeZanyat_y(x, y, korabl.length);
 
@@ -440,19 +477,24 @@ function randomPlace() {
                 pole.appendChild(img);
 
                 img.addEventListener("click", () => {
-                    for (let i = 0; i < korabl.length; i++) {
+                    for (let i = 0; i < korabl.length; i++) 
+                    {
                         const cell = getCell(x, y + i);
-                        if (cell) cell.state = "pusto";
+                        if (cell) {cell.state = "pusto"};
                     }
                     korabl.count++;
                     const count = document.querySelector(`[data-index="${i}"]`);
-                    if (count) count.textContent = korabl.count;
+                    if (count) 
+                    {
+                        count.textContent = korabl.count;
+                    }
                     img.remove();
                 });
 
-            } else {
-                if (x + korabl.length > 10) continue;
-                if (!allow_pos_x(x, y, korabl.length)) continue;
+            } else 
+            {
+                if (x + korabl.length > 10) {continue};
+                if (!allow_pos_x(x, y, korabl.length)) {continue};
 
                 makeZanyat(x, y, korabl.length);
 
@@ -470,21 +512,28 @@ function randomPlace() {
                 pole.appendChild(img);
 
                 img.addEventListener("click", () => {
-                    for (let i = 0; i < korabl.length; i++) {
+                    for (let i = 0; i < korabl.length; i++) 
+                    {
                         const cell = getCell(x + i, y);
-                        if (cell) cell.state = "pusto";
+                        if (cell) {cell.state = "pusto"};
                     }
                     korabl.count++;
                     const count = document.querySelector(`[data-index="${i}"]`);
-                    if (count) count.textContent = korabl.count;
-                    img.remove();
+                    if (count) 
+                    {
+                        count.textContent = korabl.count;
+                    }
+                        img.remove();
                 });
             }
 
             placed++;
             korabl.count--;
             const count = document.querySelector(`[data-index="${i}"]`);
-            if (count) count.textContent = korabl.count;
+            if (count) 
+            {
+                count.textContent = korabl.count
+            };
         }
     });
 }
@@ -493,13 +542,15 @@ document.getElementById("random").addEventListener("click", () => randomPlace())
 
 
 document.getElementById("start").addEventListener("click", () => {
-    if(difficulty ===0){
+    if(difficulty ===0)
+    {
         alert("Выберите сложность")
         return;
     }
 
     const placedCounter = ships.every((korabl, i) => korabl.count === 0);
-    if (!placedCounter) {
+    if (!placedCounter) 
+    {
         alert("Расставьте все корабли");
         return;
     }
@@ -596,23 +647,30 @@ document.getElementById("start").addEventListener("click", () => {
 
 
     let bot_field = [];
-    for (let i = 0; i < 10; i++) {
-        for (let ii = 0; ii < 10; ii++) {
+    for (let i = 0; i < 10; i++) 
+    {
+        for (let ii = 0; ii < 10; ii++) 
+        {
             bot_field.push(new Cell(ii, i));
         }
     }
 
-    function getBot_cell(x, y) {
+    function getBot_cell(x, y) 
+    {
         return bot_field.find(c => c.x_cords === x && c.y_cords === y);
     }
 
-     function allow_bot_x(x, y, length) {
-        for (let i = 0; i < length; i++) {
-            if (x + i > 9 || y > 9) return false;
-            for (let ii = -1; ii <= 1; ii++) {
-                for (let iii = -1; iii <= 1; iii++) {
+     function allow_bot_x(x, y, length) 
+     {
+        for (let i = 0; i < length; i++) 
+        {
+            if (x + i > 9 || y > 9) {return false};
+            for (let ii = -1; ii <= 1; ii++) 
+            {
+                for (let iii = -1; iii <= 1; iii++) 
+                {
                     const n = getBot_cell(x + i + ii, y + iii);
-                    if (n && n.state === "ship") return false;
+                    if (n && n.state === "ship") {return false};
                 }
             }
         }
@@ -620,12 +678,15 @@ document.getElementById("start").addEventListener("click", () => {
     }
 
     function allow_bot_y(x, y, length) {
-        for (let i = 0; i < length; i++) {
-            if (x > 9 || y + i > 9) return false;
-            for (let ii = -1; ii <= 1; ii++) {
-                for (let iii = -1; iii <= 1; iii++) {
+        for (let i = 0; i < length; i++) 
+        {
+            if (x > 9 || y + i > 9) {return false};
+            for (let ii = -1; ii <= 1; ii++) 
+            {
+                for (let iii = -1; iii <= 1; iii++) 
+                {
                     const n = getBot_cell(x + ii, y + i + iii);
-                    if (n && n.state === "ship") return false;
+                    if (n && n.state === "ship") {return false};
                 }
             }
         }
@@ -635,31 +696,35 @@ document.getElementById("start").addEventListener("click", () => {
 
      ships.forEach((korabl, i) => {
         let placed = 0;
-        while (placed < shipsCount[i]) {
-
+        let bad_tries = 0;
+        while (placed < shipsCount[i] && bad_tries<100) 
+        {
+            bad_tries++;
             const vertical = Math.random() < 0.5;
 
             const x = Math.floor(Math.random() * 10);
             const y = Math.floor(Math.random() * 10);
 
-            if (vertical) {
-                if (y + korabl.length > 10) continue;
-                if (!allow_bot_y(x, y, korabl.length)) continue;
-                for (let i = 0; i < korabl.length; i++) {
+            if (vertical) 
+            {
+                if (y + korabl.length > 10) {continue};
+                if (!allow_bot_y(x, y, korabl.length)) {continue};
+                for (let i = 0; i < korabl.length; i++) 
+                {
                     const cell = getBot_cell(x, y + i);
-                    if (cell) cell.state = "ship";
+                    if (cell) {cell.state = "ship"};
                 }
-            } else {
-                if (x + korabl.length > 10) continue;
-                if (!allow_bot_x(x, y, korabl.length)) continue;
-                for (let i = 0; i < korabl.length; i++) {
+            } else 
+            {
+                if (x + korabl.length > 10) {continue};
+                if (!allow_bot_x(x, y, korabl.length)) {continue};
+                for (let i = 0; i < korabl.length; i++) 
+                {
                     const cell = getBot_cell(x + i, y);
-                    if (cell) cell.state = "ship";
+                    if (cell) {cell.state = "ship"};
                 }
             }
             placed++;
         }
     });
-
-    
 });

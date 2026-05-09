@@ -567,6 +567,8 @@ document.getElementById("start").addEventListener("click", () => {
     let wincount_player = 21;
     let wincount_bot = 21;
 
+    let moves = 0;
+    const start = Date.now();
 
     document.querySelectorAll(".on_field").forEach(img => {
         img.draggable = false;
@@ -727,4 +729,263 @@ document.getElementById("start").addEventListener("click", () => {
             placed++;
         }
     });
+
+    let p_shots = [];
+    let b_shots = [];
+
+    function alreadyShot(shots_arr, x, y)
+    {
+        return shots_arr.some(i => i.x === x && i.y === y);
+    };
+
+    let p_hod = true;
+
+    const directions = 
+        [
+            {
+                hor:1,
+                vert:0,
+            },
+            {
+                hor:-1,
+                vert:0,
+            },
+            {
+                hor:0,
+                vert:1,
+            },
+            {
+                hor:0,
+                vert:-1,
+            }
+
+        ];
+
+    function checker(target,x,y)
+    {
+        let ship_cells = [{x,y}];
+
+        for (let i of directions) 
+        {
+            let xx = x + i.hor;
+            let yy = y + i.vert;
+            while (xx >= 0 && xx <= 9 && yy >= 0 && yy <= 9) 
+            {
+                const c = target.find(cell => cell.x_cords === xx && cell.y_cords === yy);
+                if (c && (c.state === "hit" || c.state === "ship")) 
+                {
+                    ship_cells.push({x: xx, y: yy});
+                    xx += i.hor;
+                    yy += i.vert;
+                } else 
+                    {
+                    break;
+                }
+            }
+        }
+        const all_hit = ship_cells.every(i=> {
+            const c = target.find(cell=> cell.x_cords === i.x && cell.y_cords === i.y);
+            return (c && c.state === "hit");
+
+        });
+
+        if(all_hit)
+        {
+            return ship_cells
+        } else
+        {
+            return null;
+        }
+    };
+
+    function otcryvashka(target,utoplennyky, shots)
+    {
+        utoplennyky.forEach(i=>{
+            for(let xx=-1;xx<=1;xx++) 
+            {
+                for(let yy=-1;yy<=1;yy++) 
+            {
+                const x_x = i.x +xx;
+                const y_y = i.y +yy;
+                if(x_x <0 || x_x>9 || y_y <0 || y_y>9) {continue};
+                if(alreadyShot(shots,x_x,y_y)) {continue};
+
+                shots.push({x: x_x, y: y_y});
+                const cell = target.querySelector(`.cell[data-x_cords="${x_x}"][data-y_cords="${y_y}"]`);
+                if (cell && !cell.classList.contains("cell_hit")) 
+                {
+                    cell.classList.add("cell_miss");
+                }
+            }
+            }
+        });
+    };
+
+
+    function Game_end(a) 
+    {
+        p_hod = false;
+       
+        const all_seconds = Math.floor((Date.now() - start)/1000);
+        const minutes = Math.floor(all_seconds / 60);
+        const seconds = all_seconds % 60;
+        const final_time = minutes>0 ? `${minutes} минyт ${seconds} секунд` : `${seconds} секунд`;
+
+
+        bot_field.forEach(c => {
+            if (c.state === "ship") 
+            {
+                const cell = enemy_pole.querySelector(`.cell[data-x_cords="${c.x_cords}"][data-y_cords="${c.y_cords}"]`);
+                if (cell) 
+                {
+                    cell.classList.add("cell_open");
+                }
+            }
+        });
+
+
+        const overlay = document.createElement("div");
+        overlay.classList.add("modal_overlay");
+
+        const modal = document.createElement("div");
+        modal.classList.add("modal");
+
+        const modal_title = document.createElement("div");
+        modal_title.classList.add("modal_title");
+        modal_title.textContent = a;
+
+        const modal_info = document.createElement("div");
+        modal_info.classList.add("modal_info");
+        modal_info.textContent = `Ходов: ${moves}   Время: ${final_time}`;
+
+        const modal_btns = document.createElement("div");
+        modal_btns.classList.add("modal_btns");
+
+        const btn_menu = document.createElement("button");
+        btn_menu.classList.add("modal_btn", "modal_btn_menu");
+        btn_menu.textContent = "В меню";
+        btn_menu.addEventListener("click", () => {
+            window.location.href = "pole.html";
+        });
+
+        const btn_again = document.createElement("button");
+        btn_again.classList.add("modal_btn", "modal_btn_again");
+        btn_again.textContent = "Играть снова";
+        btn_again.addEventListener("click", () => {
+        window.location.href = "pole.html";
+        });
+
+        modal_btns.appendChild(btn_menu);
+        modal_btns.appendChild(btn_again);
+
+        modal.appendChild(modal_title);
+        modal.appendChild(modal_info);
+        modal.appendChild(modal_btns);
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+
+    }
+
+
+     enemy_pole.addEventListener("click", e => {
+        if (!p_hod) {return};
+
+        const cell = e.target.closest(".cell");
+        if (!cell) {return};
+
+        const x = parseInt(cell.dataset.x_cords);
+        const y = parseInt(cell.dataset.y_cords);
+
+        if (alreadyShot(p_shots, x, y)) {return};
+
+        p_shots.push({x,y});
+
+        moves++;
+
+        const b_cell = getBot_cell(x, y);
+
+        if (b_cell.state === "ship") 
+        {
+            b_cell.state = "hit";
+            cell.classList.add("cell_hit");
+            wincount_bot--;
+
+            if (wincount_bot <= 0) 
+            {
+                Game_end("Вы победили");
+                return;
+            }
+
+            const utop = checker(bot_field, x, y);
+            if (utop) 
+            {
+                otcryvashka(enemy_pole, utop, p_shots);
+            }
+
+        } else 
+        {
+            b_cell.state = "miss";
+            cell.classList.add("cell_miss");
+            p_hod = false;
+            turn_label.textContent = "Ход противника";
+            setTimeout(b_Shoot, 2500);
+        }
+    });
+
+
+    function b_Shoot() {
+
+        let x;
+        let y;
+
+        do {
+             x = Math.floor(Math.random() * 10);
+            y = Math.floor(Math.random() * 10);
+        } 
+        while (alreadyShot(b_shots, x, y));
+
+        b_shots.push({x, y});
+
+        const player_cell = getCell(x, y);
+        const cell = document.querySelector(`#pole .cell[data-x_cords="${x}"][data-y_cords="${y}"]`);
+
+        if (player_cell.state === "ship") 
+        {
+            player_cell.state = "hit";
+            if (cell) 
+            {
+                cell.classList.add("cell_hit");
+            }
+            wincount_player--;
+
+            if (wincount_player <= 0) 
+            {
+                Game_end("Вы проиграли");
+                return;
+            }
+
+            const utop = checker(field, x, y);
+            if (utop) 
+            {
+                otcryvashka(document.getElementById("pole"), utop, b_shots);
+            }
+
+        } else 
+        {
+            player_cell.state = "miss";
+            if (cell) 
+            {
+                cell.classList.add("cell_miss");
+            }
+        }
+
+        p_hod = true;
+        turn_label.textContent = "Ваш ход";
+    }
+
 });
+
+
+
+

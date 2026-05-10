@@ -95,7 +95,7 @@ for(let i = 0;i<100;i++)
 
 function Opredelyator(cords)
 {
-    let res = Math.floor(cords / 60);
+    let res = Math.floor(cords / 45);
     if (res < 0 || res >9 ) {
         return null;
     }
@@ -224,8 +224,8 @@ ships.forEach((korabl, i) => {
     img.src = korabl.image;
     img.classList.add("sheep");
     img.draggable = true;
-    img.style.width = (60 * korabl.length) + "px";
-    img.style.height = 60 + "px";
+    img.style.width = (45 * korabl.length) + "px";
+    img.style.height = 45 + "px";
     img.dataset.Index = i;
 
     const countBox = document.createElement("div");
@@ -333,12 +333,12 @@ pole.addEventListener("drop",e =>{
         img.src = korabl.image;
         img.classList.add("on_field");
 
-        img.style.left = (x * 60) + "px";
-        img.style.top = (y * 60) + "px";
-        img.style.width = (60 * korabl.length) + "px";
-        img.style.height = 60 + "px";
+        img.style.left = (x * 45) + "px";
+        img.style.top = (y * 45) + "px";
+        img.style.width = (45 * korabl.length) + "px";
+        img.style.height = 45 + "px";
         img.style.transformOrigin = "top left";
-        img.style.transform = `rotate(90deg) translateY(-60px)`;
+        img.style.transform = `rotate(90deg) translateY(-45px)`;
         img.dataset.x_cords = x;
         img.dataset.y_cords = y;
         img.dataset.length = korabl.length;
@@ -377,10 +377,10 @@ pole.addEventListener("drop",e =>{
         img.src = korabl.image;
         img.classList.add("on_field");
 
-        img.style.left = (x * 60) + "px";
-        img.style.top  = (y * 60) + "px";
-        img.style.width = (60 * korabl.length) + "px";
-        img.style.height = 60 + "px";
+        img.style.left = (x * 45) + "px";
+        img.style.top  = (y * 45) + "px";
+        img.style.width = (45 * korabl.length) + "px";
+        img.style.height = 45 + "px";
         img.dataset.x_cords = x;
         img.dataset.y_cords = y;
         img.dataset.length = korabl.length;
@@ -462,12 +462,12 @@ function randomPlace() {
                 img.src = korabl.image;
                 img.classList.add("on_field");
 
-                img.style.left = (x * 60) + "px";
-                img.style.top = (y * 60) + "px";
-                img.style.width = (60 * korabl.length) + "px";
-                img.style.height = 60 + "px";
+                img.style.left = (x * 45) + "px";
+                img.style.top = (y * 45) + "px";
+                img.style.width = (45 * korabl.length) + "px";
+                img.style.height = 45 + "px";
                 img.style.transformOrigin = "top left";
-                img.style.transform = `rotate(90deg) translateY(-60px)`;
+                img.style.transform = `rotate(90deg) translateY(-45px)`;
                 img.dataset.x_cords = x;
                 img.dataset.y_cords = y;
                 img.dataset.length = korabl.length;
@@ -501,10 +501,10 @@ function randomPlace() {
                 const img = document.createElement("img");
                 img.src = korabl.image;
                 img.classList.add("on_field");
-                img.style.left   = (x * 60) + "px";
-                img.style.top    = (y * 60) + "px";
-                img.style.width  = (60 * korabl.length) + "px";
-                img.style.height = 60 + "px";
+                img.style.left   = (x * 45) + "px";
+                img.style.top    = (y * 45) + "px";
+                img.style.width  = (45 * korabl.length) + "px";
+                img.style.height = 45 + "px";
                 img.dataset.x_cords = x;
                 img.dataset.y_cords = y;
                 img.dataset.length  = korabl.length;

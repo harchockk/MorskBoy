@@ -856,7 +856,7 @@ document.getElementById("start").addEventListener("click", () => {
 
         const modal_info = document.createElement("div");
         modal_info.classList.add("modal_info");
-        modal_info.textContent = `Ходов: ${moves}   Время: ${final_time}`;
+        modal_info.textContent = `Ходов: ${moves}      Время: ${final_time}`;
 
         const modal_btns = document.createElement("div");
         modal_btns.classList.add("modal_btns");
@@ -929,54 +929,108 @@ document.getElementById("start").addEventListener("click", () => {
             cell.classList.add("cell_miss");
             p_hod = false;
             turn_label.textContent = "Ход противника";
-            setTimeout(b_Shoot, 2500);
+            setTimeout(b_Shoot, 1000);
         }
     });
 
 
-    function b_Shoot() {
 
-        let x;
-        let y;
+    let lasthit    = null;
+    let around_t   = [];   
+    let direction_t    = null;
 
-        do {
-             x = Math.floor(Math.random() * 10);
-            y = Math.floor(Math.random() * 10);
-        } 
-        while (alreadyShot(b_shots, x, y));
+    function addtargets(xx, yy) 
+    {
 
+        const neighbors = [
+            {x: xx+1, y: yy},
+            {x: xx-1, y: yy},
+            {x: xx,   y: yy+1},
+            {x: xx,   y: yy-1}
+        ];
+        neighbors.forEach(i => {
+            if (i.x < 0 || i.x > 9 || i.y < 0 || i.y > 9) {return};
+            if (alreadyShot(b_shots, i.x, i.y)) {return};
+            if (around_t.some(ii => ii.x === i.x && ii.y === i.y)) {return};
+            around_t.push(i);
+        });
+    }
+
+    function doShot(x, y) {
         b_shots.push({x, y});
 
-        const player_cell = getCell(x, y);
+        const p_cell = getCell(x, y);
         const cell = document.querySelector(`#pole .cell[data-x_cords="${x}"][data-y_cords="${y}"]`);
 
-        if (player_cell.state === "ship") 
+        if (p_cell.state === "ship")
         {
-            player_cell.state = "hit";
+            p_cell.state = "hit";
             if (cell) 
             {
                 cell.classList.add("cell_hit");
             }
+
+
             wincount_player--;
 
-            if (wincount_player <= 0) 
+            if (wincount_player <= 0)
             {
                 Game_end("Вы проиграли");
                 return;
             }
 
             const utop = checker(field, x, y);
-            if (utop) 
+
+            if (utop)
             {
                 otcryvashka(document.getElementById("pole"), utop, b_shots);
+                lasthit  = null;
+                around_t = [];
+                direction_t  = null;
             }
 
-        } else 
+            if (difficulty === 1)
+            {
+                setTimeout(b_Shoot, 1000);
+                return;
+            }
+
+            if (difficulty === 2 && !utop)
+            {
+
+                if (lasthit)
+                {
+                
+                    direction_t  = {xx: x - lasthit.x, yy: y - lasthit.y};
+                    around_t = [];
+                    around_t.push({x: x + direction_t.xx, y: y + direction_t.yy});
+
+                    around_t.push({x: lasthit.x - direction_t.xx, y: lasthit.y - direction_t.yy});
+                    around_t = around_t.filter(n =>
+                        n.x >= 0 && n.x <= 9 && n.y >= 0 && n.y <= 9 && !alreadyShot(b_shots, n.x, n.y)
+                    );
+                }
+                else
+                {
+                    addtargets(x, y);
+                }
+                lasthit = {x, y};
+                setTimeout(b_Shoot, 1000);
+                return;
+            }
+
+        } else
         {
-            player_cell.state = "miss";
+            p_cell.state = "miss";
             if (cell) 
             {
                 cell.classList.add("cell_miss");
+            }
+
+            if (difficulty === 2 && direction_t && around_t.length === 0 && lasthit)
+            {
+                direction_t = null;
+                addtargets(lasthit.x, lasthit.y);
             }
         }
 
@@ -984,7 +1038,53 @@ document.getElementById("start").addEventListener("click", () => {
         turn_label.textContent = "Ваш ход";
     }
 
+
+
+ function b_Shoot()
+    {
+        let x;
+        let y;
+
+        if (difficulty === 2 && around_t.length > 0)
+        {
+            while (around_t.length > 0 && alreadyShot(b_shots, around_t[0].x, around_t[0].y))
+            {
+                around_t.shift();
+            }
+            if (around_t.length > 0)
+            {
+                const target = around_t.shift();
+                x = target.x;
+                y = target.y;
+            }
+            else
+            {
+                do 
+                {
+                    x = Math.floor(Math.random() * 10);
+                    y = Math.floor(Math.random() * 10);
+                } 
+                while (alreadyShot(b_shots, x, y));
+            }
+        }
+        else
+        {
+            do 
+            {
+                x = Math.floor(Math.random() * 10);
+                y = Math.floor(Math.random() * 10);
+            } 
+            while (alreadyShot(b_shots, x, y));
+        }
+
+        doShot(x, y);
+    }
+
 });
+
+
+    
+
 
 
 

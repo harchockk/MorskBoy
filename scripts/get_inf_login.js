@@ -1,24 +1,83 @@
-const form = document.getElementById("userForm");
-const out = document.getElementById("out");
+// const form = document.getElementById("userForm");
+// const out = document.getElementById("out");
 
-form.addEventListener("submit",async (e) => {
-    const fd = new FormData(form);
-    const payload = {
-        username:fd.get("username"),
-        email:fd.get("email"),
-        password:fd.get("password"),
-    };
+// form.addEventListener("submit",async (e) => {
+//     const fd = new FormData(form);
+//     const payload = {
+//         username:fd.get("username"),
+//         email:fd.get("email"),
+//         password:fd.get("password"),
+//     };
 
 
-const r = await fetch("http://localhost:5000/api/users",{
-    method:"POST",
-    headers:{"Content-Type": "application/json"},
-    body:JSON.stringify(payload),
-});
 
-out.textContent = `HTTP ${r.status}\n${await r.text()}`;
-});
+// const r = await fetch("/registration",{
+//     method:"POST",
+//     headers:{"Content-Type": "application/json"},
+//     body:JSON.stringify(payload),
+// });
 
+// out.textContent = `HTTP ${r.status}\n${await r.text()}`;
+// });
+
+
+// const password = document.getElementById("password").value;
+
+// if (password.length < 8) {
+//     alert("Пароль должен содержать минимум 8 символов");
+//     return;
+//   }
+
+const registration = async (event) => {
+    event.preventDefault();
+  
+    const username = document.querySelector(".username").value;
+    const email = document.querySelector(".email").value;
+    const password = document.getElementById("password").value;
+    const checkPassword = document.getElementById("check-password").value;
+  
+    if (password.length < 8) {
+      alert("Пароль должен содержать минимум 8 символов");
+      return;
+    }
+  
+    if (password !== checkPassword) {
+      alert("Пароли не совпадают");
+      return;
+    }
+  
+    try {
+      const response = await fetch("/registration", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      console.log(data);
+  
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+  
+      alert("Регистрация успешна");
+  
+    } catch (error) {
+      console.error(error);
+      alert("Ошибка регистрации");
+    }
+  };
+  
+  document
+    .getElementById("user-form")
+    .addEventListener("submit", registration);
 
 
 

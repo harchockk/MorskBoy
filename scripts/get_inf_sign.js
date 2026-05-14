@@ -2,6 +2,7 @@ const form = document.getElementById("userForm");
 const out = document.getElementById("out");
 
 form.addEventListener("submit",async (e) => {
+
     const fd = new FormData(form);
     const payload = {
         username:fd.get("username"),
@@ -9,7 +10,7 @@ form.addEventListener("submit",async (e) => {
     };
 
 
-const r = await fetch("http://localhost:5000/api/users",{
+const r = await fetch("/registration",{
     method:"POST",
     headers:{"Content-Type": "application/json"},
     body:JSON.stringify(payload),

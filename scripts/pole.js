@@ -440,12 +440,10 @@ function randomPlace() {
 
     ships.forEach((korabl, i) => {
         let placed = 0;
-        let bad_tries = 0;
 
 
-        while (placed < shipsCount[i] && bad_tries<100) 
+        while (placed < shipsCount[i]) 
         {
-            bad_tries++;
             const vertical = Math.random() < 0.5;
 
             const x = Math.floor(Math.random() * 10);
@@ -939,6 +937,8 @@ document.getElementById("start").addEventListener("click", () => {
     let around_t   = [];   
     let direction_t    = null;
 
+    let hard_shot = 0;
+
     function addtargets(xx, yy) 
     {
 
@@ -948,12 +948,130 @@ document.getElementById("start").addEventListener("click", () => {
             {x: xx,   y: yy+1},
             {x: xx,   y: yy-1}
         ];
+
+        for (let i = neighbors.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [neighbors[i], neighbors[j]] = [neighbors[j], neighbors[i]];
+        };
+
         neighbors.forEach(i => {
             if (i.x < 0 || i.x > 9 || i.y < 0 || i.y > 9) {return};
             if (alreadyShot(b_shots, i.x, i.y)) {return};
             if (around_t.some(ii => ii.x === i.x && ii.y === i.y)) {return};
             around_t.push(i);
         });
+    }
+
+    function theory_Shot()
+    {
+        
+        const check_size = [5, 4, 3, 2];
+
+        let virt_pole = [];
+        for (let i = 0; i < 10; i++) 
+        {
+            virt_pole.push([]);
+            for (let ii = 0; ii < 10; ii++) 
+            {
+                virt_pole[i].push(0);
+            }
+        }
+
+        check_size.forEach(size => {
+            for (let row = 0; row < 10; row++) 
+            {
+                for (let col = 0; col <= 10 - size; col++) 
+                {
+                    let ok = true;
+                    for (let i = 0; i < size; i++) 
+                    {
+                        const c = field.find(cell => cell.x_cords === col+i && cell.y_cords === row);
+
+                        if (!c || c.state === "miss" || c.state === "hit") 
+                        {
+                            ok = false;
+                            break;
+                        }
+                        if (alreadyShot(b_shots, col+i, row)) 
+                        {
+                            ok = false;
+                            break;
+                        }
+                    }
+                        if (ok) 
+                        {
+                            for (let i = 0; i < size; i++) 
+                            {
+                                virt_pole[row][col+i]++;
+                            }
+                        }
+                    }
+            }
+            for (let col = 0; col < 10; col++) 
+            {
+                for (let row = 0; row <= 10 - size; row++) 
+                {
+                    let ok = true;
+                    for (let i = 0; i < size; i++) 
+                    {
+                        const c = field.find(cell => cell.x_cords === col && cell.y_cords === row+i);
+                        if (!c || c.state === "miss" || c.state === "hit") 
+                        {
+                            ok = false;
+                            break;
+                        }
+                        if (alreadyShot(b_shots, col, row+i)) 
+                        {
+                            ok = false;
+                            break;
+                        }
+                    }
+                    if (ok) 
+                    {
+                        for (let i = 0; i < size; i++) 
+                        {
+                            virt_pole[row+i][col]++;
+                        }
+                    }
+                }
+            }
+        });
+
+        let max_theo = 0;
+        for (let row = 0; row < 10; row++) 
+        {
+            for (let col = 0; col < 10; col++) 
+            {
+                if (virt_pole[row][col] > max_theo) 
+                {
+                    max_theo = virt_pole[row][col];
+                }
+            }
+        };
+
+        let best = [];
+        for (let row = 0; row < 10; row++) {
+            for (let col = 0; col < 10; col++) 
+            {
+                if (virt_pole[row][col] === max_theo && !alreadyShot(b_shots, col, row)) 
+                {
+                    best.push({x: col, y: row});
+                }
+            }
+        };
+
+        if (best.length === 0) 
+        {
+            let x
+            let y;
+            do {
+                x = Math.floor(Math.random() * 10);
+                y = Math.floor(Math.random() * 10);
+            } while (alreadyShot(b_shots, x, y));
+            return {x, y};
+        }
+
+        return best[Math.floor(Math.random() * best.length)];
     }
 
     function doShot(x, y) {
@@ -970,7 +1088,6 @@ document.getElementById("start").addEventListener("click", () => {
                 cell.classList.add("cell_hit");
             }
 
-
             wincount_player--;
 
             if (wincount_player <= 0)
@@ -985,17 +1102,26 @@ document.getElementById("start").addEventListener("click", () => {
             {
                 otcryvashka(document.getElementById("pole"), utop, b_shots);
                 lasthit  = null;
+                first_hit   = null;
                 around_t = [];
                 direction_t  = null;
+                
+                if (difficulty === 1)
+                {
+                    setTimeout(b_Shoot, 1000);
+                    return;
+                }
+                setTimeout(b_Shoot, 1000);
+                return;
             }
 
-            if (difficulty === 1)
+             if (difficulty === 1)
             {
                 setTimeout(b_Shoot, 1000);
                 return;
             }
 
-            if (difficulty === 2 && !utop)
+            if (difficulty === 2 || difficulty === 3)
             {
 
                 if (lasthit)
@@ -1003,15 +1129,21 @@ document.getElementById("start").addEventListener("click", () => {
                 
                     direction_t  = {xx: x - lasthit.x, yy: y - lasthit.y};
                     around_t = [];
-                    around_t.push({x: x + direction_t.xx, y: y + direction_t.yy});
+                    const vpered = {x: x + direction_t.xx, y: y + direction_t.yy};
+                    const nazad = {x: first_hit.x - direction_t.xx, y: first_hit.y - direction_t.yy};
 
-                    around_t.push({x: lasthit.x - direction_t.xx, y: lasthit.y - direction_t.yy});
-                    around_t = around_t.filter(n =>
-                        n.x >= 0 && n.x <= 9 && n.y >= 0 && n.y <= 9 && !alreadyShot(b_shots, n.x, n.y)
-                    );
+                    if (vpered.x >= 0 && vpered.x <= 9 && vpered.y >= 0 && vpered.y <= 9 && !alreadyShot(b_shots, vpered.x, vpered.y))
+                    {
+                        around_t.push(vpered);
+                    }
+                    if (nazad.x >= 0 && nazad.x <= 9 && nazad.y >= 0 && nazad.y <= 9 && !alreadyShot(b_shots, nazad.x, nazad.y))
+                    {
+                        around_t.push(nazad);
+                    }
                 }
                 else
                 {
+                    first_hit = {x, y};
                     addtargets(x, y);
                 }
                 lasthit = {x, y};
@@ -1027,10 +1159,10 @@ document.getElementById("start").addEventListener("click", () => {
                 cell.classList.add("cell_miss");
             }
 
-            if (difficulty === 2 && direction_t && around_t.length === 0 && lasthit)
+            if ((difficulty === 2 || difficulty === 3) && direction_t && around_t.length === 0 && first_hit)
             {
                 direction_t = null;
-                addtargets(lasthit.x, lasthit.y);
+                addtargets(first_hit.x, first_hit.y);
             }
         }
 
@@ -1045,7 +1177,7 @@ document.getElementById("start").addEventListener("click", () => {
         let x;
         let y;
 
-        if (difficulty === 2 && around_t.length > 0)
+        if ((difficulty === 2 || difficulty === 3) && around_t.length > 0)
         {
             while (around_t.length > 0 && alreadyShot(b_shots, around_t[0].x, around_t[0].y))
             {
@@ -1056,21 +1188,20 @@ document.getElementById("start").addEventListener("click", () => {
                 const target = around_t.shift();
                 x = target.x;
                 y = target.y;
+                doShot(x, y);
+                return;
             }
-            else
-            {
-                do 
-                {
-                    x = Math.floor(Math.random() * 10);
-                    y = Math.floor(Math.random() * 10);
-                } 
-                while (alreadyShot(b_shots, x, y));
-            }
+        }
+       
+        if (difficulty === 3 && b_shots.length >= 20)
+        {
+            const best = theory_Shot();
+            x = best.x;
+            y = best.y;
         }
         else
         {
-            do 
-            {
+            do {
                 x = Math.floor(Math.random() * 10);
                 y = Math.floor(Math.random() * 10);
             } 

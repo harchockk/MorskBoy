@@ -936,6 +936,9 @@ document.getElementById("start").addEventListener("click", () => {
     let lasthit    = null;
     let around_t   = [];   
     let direction_t    = null;
+    let first_hit  = null;
+    let going_back  = false;
+    let hit_cells  = [];
 
     let hard_shot = 0;
 
@@ -960,6 +963,48 @@ document.getElementById("start").addEventListener("click", () => {
             if (around_t.some(ii => ii.x === i.x && ii.y === i.y)) {return};
             around_t.push(i);
         });
+    }
+
+     function recalcTargets()
+    {
+        around_t = [];
+
+        if (hit_cells.length === 0) {return};
+
+        if (!direction_t)
+        {
+            addtargets(hit_cells[0].x, hit_cells[0].y);
+            return;
+        }
+
+        const sorted = hit_cells.slice().sort((a, b) =>
+            (a.x * direction_t.xx + a.y * direction_t.yy) -  (b.x * direction_t.xx + b.y * direction_t.yy)
+        );
+
+        const tail = sorted[0];             
+        const head = sorted[sorted.length-1]; 
+
+        const fwd = {x: head.x + direction_t.xx, y: head.y + direction_t.yy};
+        if (fwd.x >= 0 && fwd.x <= 9 && fwd.y >= 0 && fwd.y <= 9 && !alreadyShot(b_shots, fwd.x, fwd.y))
+        {
+            around_t.push(fwd);
+        }
+
+        const bck = {x: tail.x - direction_t.xx, y: tail.y - direction_t.yy};
+        if (bck.x >= 0 && bck.x <= 9 && bck.y >= 0 && bck.y <= 9 && !alreadyShot(b_shots, bck.x, bck.y))
+        {
+            around_t.push(bck);
+        }
+    }
+
+    function resetHunt()
+    {
+        lasthit     = null;
+        first_hit   = null;
+        around_t    = [];
+        direction_t = null;
+        going_back  = false;
+        hit_cells   = [];
     }
 
     function theory_Shot()
@@ -1080,6 +1125,7 @@ document.getElementById("start").addEventListener("click", () => {
         const p_cell = getCell(x, y);
         const cell = document.querySelector(`#pole .cell[data-x_cords="${x}"][data-y_cords="${y}"]`);
 
+        
         if (p_cell.state === "ship")
         {
             p_cell.state = "hit";
@@ -1101,21 +1147,12 @@ document.getElementById("start").addEventListener("click", () => {
             if (utop)
             {
                 otcryvashka(document.getElementById("pole"), utop, b_shots);
-                lasthit  = null;
-                first_hit   = null;
-                around_t = [];
-                direction_t  = null;
-                
-                if (difficulty === 1)
-                {
-                    setTimeout(b_Shoot, 1000);
-                    return;
-                }
+                resetHunt();
                 setTimeout(b_Shoot, 1000);
                 return;
             }
 
-             if (difficulty === 1)
+            if (difficulty === 1)
             {
                 setTimeout(b_Shoot, 1000);
                 return;
@@ -1123,30 +1160,18 @@ document.getElementById("start").addEventListener("click", () => {
 
             if (difficulty === 2 || difficulty === 3)
             {
+                hit_cells.push({x, y});
 
-                if (lasthit)
+                if (hit_cells.length === 2)
                 {
-                
-                    direction_t  = {xx: x - lasthit.x, yy: y - lasthit.y};
-                    around_t = [];
-                    const vpered = {x: x + direction_t.xx, y: y + direction_t.yy};
-                    const nazad = {x: first_hit.x - direction_t.xx, y: first_hit.y - direction_t.yy};
+                    direction_t = {
+                        xx: hit_cells[1].x - hit_cells[0].x,
+                        yy: hit_cells[1].y - hit_cells[0].y
+                    };
+                }
 
-                    if (vpered.x >= 0 && vpered.x <= 9 && vpered.y >= 0 && vpered.y <= 9 && !alreadyShot(b_shots, vpered.x, vpered.y))
-                    {
-                        around_t.push(vpered);
-                    }
-                    if (nazad.x >= 0 && nazad.x <= 9 && nazad.y >= 0 && nazad.y <= 9 && !alreadyShot(b_shots, nazad.x, nazad.y))
-                    {
-                        around_t.push(nazad);
-                    }
-                }
-                else
-                {
-                    first_hit = {x, y};
-                    addtargets(x, y);
-                }
-                lasthit = {x, y};
+                recalcTargets();
+
                 setTimeout(b_Shoot, 1000);
                 return;
             }
@@ -1159,10 +1184,9 @@ document.getElementById("start").addEventListener("click", () => {
                 cell.classList.add("cell_miss");
             }
 
-            if ((difficulty === 2 || difficulty === 3) && direction_t && around_t.length === 0 && first_hit)
+            if ((difficulty === 2 || difficulty === 3) && hit_cells.length > 0)
             {
-                direction_t = null;
-                addtargets(first_hit.x, first_hit.y);
+                recalcTargets();
             }
         }
 

@@ -96,21 +96,24 @@ for(let i = 0;i<100;i++)
 function Opredelyator(cords)
 {
     let res = Math.floor(cords / 45);
-    if (res < 0 || res >9 ) {
+    if (res < 0 || res >9 ) 
+    {
         return null;
     }
     return res;
 };
 
-function getCell(x, y) {
+function getCell(x, y) 
+{
     return field.find(cell => cell.x_cords === x && cell.y_cords === y);
 };
 
-function allow_pos_x(x, y, length) {
+function allow_pos_x(x, y, length) 
+{
     for (let i = 0; i < length; i++) 
     {
 
-        if (x+i > 9 || y > 9) return false;
+        if (x+i > 9 || y > 9) {return false};
 
         for (let ii = -1; ii <= 1; ii++) 
         {
@@ -131,7 +134,7 @@ function allow_pos_y(x, y, length) {
     for (let i = 0; i < length; i++) 
     {
 
-        if (x > 9 || y + i > 9) return false;
+        if (x > 9 || y + i > 9) {return false};
 
         for (let ii = -1; ii <= 1; ii++) 
         {

@@ -15,19 +15,23 @@
     
     
 <div class="card">
-       <h1>Войти</h1> 
-       <form id="signInForm" class="user-form">
-            <label>Username</label>
-            <input type="text" name="username" required>
+    <h1>Войти</h1> 
+    <form id="user-form" class="user-form">
+        <label>Username</label>
+        <input type="text" name="username" id="username"required>
 
-            <label>Password</label>
-            <input type="password" name="password" required>
+        <label>Password</label>
+        <input type="password" name="password" id="password" required>
 
-            <p class="perehod">Нет аккаунта? <a href="login.html">Зарегистрироваться</a></p>
-            <button type="submit">Войти</button>
-        </form>
-        <pre id="out"></pre>
-    </div>
+        <button type="submit">Войти</button>
+    </form>
+        <p class="perehod">Нет аккаунта? <a href="login.html">Зарегистрироваться</a></p>
+</div>
+
+    <script src="scripts/acc.js"></script>
+<script>
+    document.getElementById("user-form").addEventListener("submit", signIn);
+</script>
     
 </body>
 </html>

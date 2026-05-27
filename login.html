@@ -15,25 +15,27 @@
 
 <div class="card">
         <h1>Регистрация</h1> 
-        <form class="user-form" onclick="registration()">
+        <form class="user-form" id="registerForm">
                 <label>Username</label>
-                <input type="text" name="username" class="username" required>
+                <input type="text" name="username" class="username" id="username"   required>
     
                 <label>Email</label>
-                <input type="email" name="Email" class="email" required>
+                <input type="email" name="Email" class="email" id="email" required>
     
                 <label>Password</label>
                 <input type="password" name="password" type="password" id="password" required>
 
                 <label>Password again</label>
-                <input type="check-password" name="check-password" type="password" id="check-password" required>
+                <input type="password" name="check-password"  id="check-password" required>
     
                 <button type="submit">Создать</button>
             </form>
             <p class="perehod">Уже есть аккаунт? <a href="signin.html">Войти</a></p>
-            <pre id="out"></pre>
         </div>
-     
+    <script src="scripts/acc.js"></script>
+<script>
+    document.getElementById("registerForm").addEventListener("submit", registration);
+</script>
     </section>
    
 </body>
